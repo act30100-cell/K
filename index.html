@@ -25,7 +25,7 @@
     overscroll-behavior:none;
   }
 
-  .stage{ position:relative; flex:1 1 auto; min-height:0; }
+  .stage{ position:relative; flex:1 1 auto; min-height:0; height:100%; }
 
   .track{
     height:100%; display:flex;
@@ -40,7 +40,7 @@
     flex:0 0 100%; height:100%;
     scroll-snap-align:center; scroll-snap-stop:always;
     display:flex; align-items:center; justify-content:center;
-    padding:12px 10px 6px;
+    padding:calc(12px + env(safe-area-inset-top)) 10px calc(12px + env(safe-area-inset-bottom));
   }
   .slide img{
     max-width:100%; max-height:100%;
@@ -60,14 +60,6 @@
   .nav:disabled{ opacity:.3; cursor:default; }
   @media (hover:hover) and (pointer:fine){ .nav{ display:flex; } }
 
-  .hint{
-    flex:0 0 auto; text-align:center;
-    font-size:12.5px; letter-spacing:-0.4px; color:#8C8C8C;
-    padding:10px 0 calc(14px + env(safe-area-inset-bottom));
-    transition:opacity .35s;
-  }
-  .hint b{ font-weight:700; color:#ED7D31; }
-  .hint.hide{ opacity:0; }
 
   @media (min-width:820px){
     body{ max-width:600px; margin:0 auto; box-shadow:0 0 40px rgba(0,0,0,.08); }
@@ -93,16 +85,13 @@
   <button class="nav next" id="next" aria-label="다음">›</button>
 </div>
 
-<div class="hint" id="hint">좌우로 넘겨보세요 <b>→</b></div>
-
 <script>
 (function(){
   var track = document.getElementById('track');
   var prev  = document.getElementById('prev');
   var next  = document.getElementById('next');
-  var hint  = document.getElementById('hint');
   var total = track.children.length;
-  var idx = 0, moved = false;
+  var idx = 0;
 
   function go(i){
     i = Math.max(0, Math.min(total - 1, i));
@@ -115,7 +104,6 @@
     idx = i;
     prev.disabled = (idx === 0);
     next.disabled = (idx === total - 1);
-    if (!moved) { moved = true; hint.classList.add('hide'); }
   }
 
   var tick;
