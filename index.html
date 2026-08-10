@@ -63,6 +63,22 @@
 
 
 
+  .hint{
+    position:absolute; left:50%; transform:translateX(-50%);
+    bottom:calc(54px + env(safe-area-inset-bottom));
+    background:rgba(43,43,43,.72); color:#fff;
+    font-size:12px; font-weight:600; letter-spacing:-0.3px;
+    padding:6px 14px; border-radius:100px;
+    z-index:6; pointer-events:none;
+    -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+    animation:blink 1.5s ease-in-out infinite;
+    transition:opacity .4s;
+  }
+  .hint b{ font-weight:700; color:#FFB27A; margin-left:2px; }
+  .hint.hide{ opacity:0; animation:none; }
+  @keyframes blink{ 0%,100%{ opacity:1; } 50%{ opacity:.25; } }
+  @media (prefers-reduced-motion:reduce){ .hint{ animation:none; } }
+
   .pager{
     position:absolute; left:50%; transform:translateX(-50%);
     bottom:calc(18px + env(safe-area-inset-bottom));
@@ -97,6 +113,7 @@
   </div>
   <button class="nav prev" id="prev" aria-label="이전">‹</button>
   <button class="nav next" id="next" aria-label="다음">›</button>
+  <div class="hint" id="hint">좌우로 넘겨보세요 <b>→</b></div>
   <div class="pager" aria-live="polite"><b id="cur">1</b><i>/</i><span id="tot">10</span></div>
 </div>
 
@@ -106,6 +123,8 @@
   var prev  = document.getElementById('prev');
   var next  = document.getElementById('next');
   var curEl = document.getElementById('cur');
+  var hint  = document.getElementById('hint');
+  var moved = false;
   var total = track.children.length;
   document.getElementById('tot').textContent = total;
   var idx = 0;
@@ -120,6 +139,7 @@
     if (i === idx) return;
     idx = i;
     curEl.textContent = idx + 1;
+    if (!moved) { moved = true; hint.classList.add('hide'); }
     prev.disabled = (idx === 0);
     next.disabled = (idx === total - 1);
   }
